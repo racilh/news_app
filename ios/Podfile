@@ -16,6 +16,8 @@ target 'news_tasks' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'news_tasksTests' do
     inherit! :complete
     # Pods for testing

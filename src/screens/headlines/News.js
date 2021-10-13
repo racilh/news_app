@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
-import {Card, Divider} from "react-native-elements";
+import {FlatList, SafeAreaView} from 'react-native';
 import 'react-native-gesture-handler';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import {useNavigation} from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {NewsCard} from "../../components/NewsCard";
 import moment from "moment";
+import {useNavigation} from "@react-navigation/native";
 import {styles} from "../../utils/style";
 
 const getNews = () => {
@@ -18,7 +18,7 @@ const getNews = () => {
 
     useEffect(() => {
         setRefreshing(true);
-        fetch('https://newsapi.org/v2/top-headlines?country=eg&category1="+business+"&category2="+sports&apiKey=fc6bd78fc42243d5ac51bbec5ee72734')
+        fetch('https://newsapi.org/v2/top-headlines?country=eg&category1="+business+"&category2="+sports&apiKey=5b0be3a6270b4ddb87c1b0a789290970')
             .then((res) => res.json())
             .then((json) => {
                 if (json.status === "error") {
@@ -37,7 +37,7 @@ const getNews = () => {
                         }
                     })
                 setRefreshing(false);
-            }).catch(console.log);
+            }).catch(console.error);
     }, []);
 
     return {
@@ -47,10 +47,9 @@ const getNews = () => {
 };
 
 export default () => {
-    const navigation = useNavigation();
     const {articles, refreshing} = getNews();
     const [value, setValue] = useState();
-
+    const navigation = useNavigation();
     const refresh = () => {
         // re-renders the component
         setValue({});
@@ -68,6 +67,7 @@ export default () => {
                 item.histories = moment()
                     .format('YYYY-MM-DD hh:mm:ss a');
                 bookmarks[item.publishedAt] = item
+                console.log(bookmarks)
                 AsyncStorage.setItem('bookmarks', JSON.stringify(bookmarks))
                     .then(() => refresh())
             })
@@ -86,7 +86,6 @@ export default () => {
                     item.histories = moment()
                         .format('YYYY-MM-DD hh:mm:ss a');
                     delete bookmarks[item.publishedAt]
-                    console.log(item.bookmark);
                     console.log(bookmarks)
                     AsyncStorage.setItem('bookmarks', JSON.stringify(bookmarks))
                         .then(() => refresh())
@@ -97,66 +96,30 @@ export default () => {
             })
 
     };
-        return (
-        <SafeAreaView>
+    const onPress = (item) => {
+
+        navigation.navigate('NewsDetail', {
+            ...item,
+        })
+    };
+    return (
+
+        <SafeAreaView >
             <FlatList
                 data={articles}
                 keyExtractor={item => item.url}
                 renderItem={({item}) => (
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('NewsDetail', {
-                            ...item,
-                        })}
-                    >
-                        <Card style={styles.cardContainer}>
-                            <View
-                                style={styles.container}
-                            >
-                                {
-                                    (!item.bookmark)
-                                        ? (
-                                            <TouchableWithoutFeedback
-                                                onPress={() => saveBookMark(item)}>
-                                                <Ionicons name="bookmarks" size={20} color="grey"/>
-                                            </TouchableWithoutFeedback>
-                                        )
-                                        :
-                                        (
-                                            <TouchableOpacity onPress={() => removeBookMark(item)}>
-                                                <Ionicons name="bookmarks" size={20} color="red"/>
-                                            </TouchableOpacity>
-                                        )
-                                }
-                                <Text style={styles.titleStyle}>{item.title}</Text>
-                            </View>
-                            <Divider style={{backgroundColor: '#dfe6e9'}}/>
-                            <Image
-                                style={styles.image}
-                                source={{uri: item.urlToImage || item.defaultImg}}
-                            />
-
-
-                            <Divider style={{backgroundColor: '#dfe6e9'}}/>
-
-                            <Text style={styles.descriptionStyle}>
-                                {item.description || 'Read More..'}
-                            </Text>
-
-                            <Divider style={{backgroundColor: '#dfe6e9'}}/>
-
-                            <View
-                                style={styles.container}
-                            >
-                                <Text style={styles.noteStyle}>{item.source.name.toUpperCase()}</Text>
-                                <Text style={styles.noteStyle}>{item.publishedAt}</Text>
-
-                            </View>
-                        </Card>
-                    </TouchableOpacity>
+                    <NewsCard
+                        {...item}
+                        onPress={() => onPress(item)}
+                        bookmark={item.bookmark}
+                        saveBookMark={() => saveBookMark(item)}
+                        removeBookMark={() => removeBookMark(item)}/>
                 )}
                 refreshing={refreshing}/>
 
         </SafeAreaView>
+
     );
 }
 

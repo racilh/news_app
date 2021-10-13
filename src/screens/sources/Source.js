@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from 'react';
+import config from 'react-native-config';
 import {
     FlatList,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    View
+    SafeAreaView
 } from 'react-native';
-import {Card, Divider} from "react-native-elements";
 import 'react-native-gesture-handler';
-import {useNavigation} from "@react-navigation/native";
+import {SourceCard} from "../../components/SourceCard";
 
 
 const getSources = () => {
@@ -18,7 +15,7 @@ const getSources = () => {
 
     useEffect( () => {
         setRefreshing(true);
-        fetch('https://newsapi.org/v2/top-headlines/sources?apiKey=fc6bd78fc42243d5ac51bbec5ee72734')
+        fetch('https://newsapi.org/v2/top-headlines/sources?apiKey=5b0be3a6270b4ddb87c1b0a789290970')
             .then((res) => res.json())
             .then((json) => {
                 if (json.status === "error") {
@@ -28,7 +25,7 @@ const getSources = () => {
 
                 }
                 setRefreshing(false);
-            }).catch(console.log);
+            }).catch(console.error);
     },[]);
 
     return {
@@ -38,7 +35,6 @@ const getSources = () => {
 };
 
 export default () => {
-    const navigation = useNavigation();
     const {sources, refreshing} = getSources();
 
     return (
@@ -47,76 +43,10 @@ export default () => {
                 data={sources}
                 keyExtractor={item => item.url}
                 renderItem={({item}) => (
-                    <TouchableOpacity
-
-                        onPress={() => navigation.navigate('SourceNews',{
-                            ...item,
-                        })}
-                    >
-                        <Card>
-                            <View
-                                style={styles.container}
-                            >
-                                <Text style={styles.titleStyle}>{item.name}</Text>
-
-                            </View>
-                            <Divider style={{backgroundColor: '#dfe6e9'}}/>
-                            <Text style={styles.descriptionStyle}>
-                                {item.description || 'Read More..'}
-                            </Text>
-                            <Divider style={{backgroundColor: '#dfe6e9'}}/>
-                            <View
-                                style={styles.container}
-                            >
-                                <Text style={styles.noteStyle}>{item.language}</Text>
-                                <Text style={styles.noteStyle}>{item.category}</Text>
-                            </View>
-                        </Card>
-                    </TouchableOpacity>
+                   <SourceCard  {...item}/>
                 )}
                 refreshing={refreshing}/>
         </SafeAreaView>
     );
 }
 
-
-const styles = {
-    container: {
-        flexDirection: 'row',
-
-        margin: 15,
-        borderRadius: 50,
-    },
-    noteStyle: {
-        margin: 5,
-        fontStyle: 'italic',
-        color: '#b2bec3',
-        fontSize: 10
-    },
-    descriptionStyle: {
-        margin: 20,
-        fontStyle: 'italic',
-        color: 'black',
-        fontSize: 15
-    },
-    titleStyle: {
-        marginHorizontal: 5,
-        fontSize: 20,
-        color:"black",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    image: {
-        height: 150,
-        width: "100%",
-        justifyContent: "flex-start",
-        margin: 5
-    },
-    cardContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        margin: 15,
-        borderRadius: 50,
-        overflow: 'hidden',
-    },
-};

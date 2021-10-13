@@ -1,12 +1,27 @@
-import {View,Text,Button} from "react-native";
 import React from 'react';
+import {Switch} from 'react-native';
+import styled from 'styled-components/native';
+import {useTheme} from "../../utils/ThemeManager";
 
+const Container = styled.View`
+  flex: 1;
+  background:${props => props.theme.backgroundAlt};
+  align-items: center;
+  justify-content: center;`
+
+const Title = styled.Text`
+  color: ${props => props.theme.text};
+`
 function SettingsScreen() {
+    const theme = useTheme()
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Profile Screen</Text>
-            <Text>Friends: </Text>
-        </View>
-    );
+        <Container>
+            <Title>{theme.mode}</Title>
+            <Switch
+                value={theme.mode === 'dark'}
+                onValueChange={value => theme.setMode(value ? 'dark' : 'light')}
+            />
+        </Container>
+    )
 }
 export default SettingsScreen;
