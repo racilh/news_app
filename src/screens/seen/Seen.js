@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, SafeAreaView} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GeneralCard} from "../../components/Card";
+import {GeneralCard} from "../../components/Card";
 
 const getData = () => {
     const [data, setData] = useState([])

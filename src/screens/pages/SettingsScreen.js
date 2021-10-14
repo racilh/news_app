@@ -1,27 +1,29 @@
 import React from 'react';
-import {Switch} from 'react-native';
-import styled from 'styled-components/native';
-import {useTheme} from "../../utils/ThemeManager";
+import {useDispatch, useSelector} from "react-redux";
+import {Switch,View,Text} from "react-native";
+import {styles} from "../../utils/style";
 
-const Container = styled.View`
-  flex: 1;
-  background:${props => props.theme.backgroundAlt};
-  align-items: center;
-  justify-content: center;`
-
-const Title = styled.Text`
-  color: ${props => props.theme.text};
-`
 function SettingsScreen() {
-    const theme = useTheme()
+    const dispatch=useDispatch()
+    const currentTheme = useSelector(state=>{
+
+        return state.myDarMode
+    })
+    console.log(currentTheme)
+
     return (
-        <Container>
-            <Title>{theme.mode}</Title>
-            <Switch
-                value={theme.mode === 'dark'}
-                onValueChange={value => theme.setMode(value ? 'dark' : 'light')}
-            />
-        </Container>
+        <View style={styles.switch}>
+            <Text style={currentTheme ? styles.darkDescriptionStyle :styles.lightDescriptionStyle}>
+                {currentTheme ? 'Dark Mode' : 'Light Mode'}
+            </Text>
+        <Switch
+            trackColor={{ false: "grey", true: "white" }}
+            thumbColor={currentTheme ? "blue" : "yellow"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={()=>dispatch({type:"change_theme",payload:!currentTheme})}
+            value={currentTheme}
+        />
+        </View>
     )
 }
 export default SettingsScreen;

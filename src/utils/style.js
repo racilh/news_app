@@ -1,3 +1,4 @@
+import {DarkTheme, DefaultTheme} from "@react-navigation/native";
 
 export const styles = {
     container: {
@@ -5,20 +6,25 @@ export const styles = {
         justifyContent: 'space-between',
         margin: 10,
     },
-    noteStyle: {
-        margin: 10,
-        fontStyle: 'italic',
-        color: 'grey',
-        fontSize: 12,
-        textAlign: 'right',
-    },
-    descriptionStyle: {
+
+    darkDescriptionStyle: {
         margin: 20,
         fontWeight: 'bold',
         color: 'grey',
         fontSize: 15
     },
-    titleStyle: {
+    lightDescriptionStyle: {
+        margin: 20,
+        fontWeight: 'bold',
+        color: 'grey',
+        fontSize: 15
+    },
+    darkTitleStyle: {
+        fontSize: 20,
+        color:"white",
+
+    },
+    lightTitleStyle: {
         fontSize: 20,
         color:"black",
 
@@ -30,11 +36,69 @@ export const styles = {
         margin: 5,
         borderRadius: 5
     },
-    cardContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        margin: 30,
-        borderRadius:50,
-        overflow: 'hidden',
+
+    darkNoteStyle:{
+        color:"white",
+        margin: 10,
+        fontStyle: 'italic',
+        fontSize: 12,
+        textAlign: 'right',
     },
+    lightNoteStyle:{
+        color:"black",
+        margin: 10,
+        fontStyle: 'italic',
+        fontSize: 12,
+        textAlign: 'right',
+    },
+    darkCard:{
+        borderRadius: 10,
+        backgroundColor:'black',
+    },
+    lightCard:{
+        borderRadius: 10,
+        backgroundColor:'white',
+    },
+    darkIcon:{
+
+        color:"white"
+    },
+    lightIcon:{
+
+        color:"black"
+    },
+    customDefaultTheme:{
+        ...DefaultTheme,
+        colors:{
+            ...DefaultTheme.colors,
+            headerColor:"white",
+            iconColor:"black",
+            tabIcon:"red",
+            textColor:"black"
+        }
+    },
+     customDarkTheme:{
+        ...DarkTheme,
+        colors:{
+            ...DarkTheme.colors,
+            headerColor:"#404040",
+            iconColor:"white",
+            tabIcon:"white",
+            textColor:"white"
+        }
+    },
+    tab: {
+        position: 'absolute',
+        bottom: 0,
+        height: 68,
+        width: 68,
+        borderRadius: 68,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    switch:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 };

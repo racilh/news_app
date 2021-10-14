@@ -1,8 +1,10 @@
 import React from 'react';
-import {Image, Pressable, Text, TouchableOpacity, View,} from 'react-native';
+import {Button, Image, Pressable, Text, TouchableOpacity, View,} from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {Card, Divider} from "react-native-elements";
 import {styles} from "../utils/style"
+import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 interface NewsCardProps {
     title: string;
@@ -20,9 +22,12 @@ interface NewsCardProps {
 
 export const NewsCard: React.FC<NewsCardProps> = React.memo(
     (props: NewsCardProps) => {
+        let currentTheme = useSelector(state=>{
+            return state.myDarMode
+        })
         return (
             <Pressable onPress={props.onPress}>
-                <Card containerStyle = {{borderRadius: 10}} >
+                <Card  containerStyle ={currentTheme ? styles.darkCard :styles.lightCard} >
                     <View
                         style={styles.container}
                     >
@@ -30,7 +35,7 @@ export const NewsCard: React.FC<NewsCardProps> = React.memo(
                         (!props.bookmark)
                             ? (
                                 <TouchableOpacity onPress={() => props.saveBookMark(props)}>
-                                    <Ionicons name="bookmarks-outline" size={20} color="grey"/>
+                                    <Ionicons name="bookmarks-outline" size={20} color={currentTheme ? "white" : "black"}/>
                                 </TouchableOpacity>
                             )
                             :
@@ -40,7 +45,7 @@ export const NewsCard: React.FC<NewsCardProps> = React.memo(
                                 </TouchableOpacity>
                             )
                     }
-                    <Text style={styles.titleStyle}>{props.title}</Text>
+                    <Text style={currentTheme ? styles.darkTitleStyle :styles.lightTitleStyle}>{props.title}</Text>
                     </View>
                     <Image
                         style={styles.image}
@@ -50,7 +55,7 @@ export const NewsCard: React.FC<NewsCardProps> = React.memo(
 
 
 
-                    <Text style={styles.descriptionStyle}>
+                    <Text style={currentTheme ? styles.darkDescriptionStyle :styles.lightDescriptionStyle}>
                         {props.description || 'Read More..'}
                     </Text>
 
@@ -59,8 +64,8 @@ export const NewsCard: React.FC<NewsCardProps> = React.memo(
                     <View
                         style={styles.container}
                     >
-                        <Text style={styles.noteStyle}>{props.source.name.toUpperCase()}</Text>
-                        <Text style={styles.noteStyle}>{props.publishedAt}</Text>
+                        <Text style={currentTheme ? styles.darkNoteStyle :styles.lightNoteStyle}>{props.source.name.toUpperCase()}</Text>
+                        <Text style={currentTheme ? styles.darkNoteStyle :styles.lightNoteStyle}>{props.publishedAt}</Text>
 
                     </View>
                 </Card>

@@ -1,24 +1,51 @@
-import {View,StyleSheet} from "react-native";
-import React from 'react';
-import News from "../headlines/News";
+import React, {useEffect, useState} from 'react';
+import {
+    FlatList,
+    SafeAreaView
+} from 'react-native';
 import 'react-native-gesture-handler';
-import Source from "./Source";
+import {SourceCard} from "../../components/SourceCard";
 
-function Sources() {
+
+const getSources = () => {
+
+    const [sources, setSources] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    useEffect( () => {
+        setRefreshing(true);
+        fetch('https://newsapi.org/v2/top-headlines/sources?apiKey=5b0be3a6270b4ddb87c1b0a789290970')
+            .then((res) => res.json())
+            .then((json) => {
+                if (json.status === "error") {
+                    setSources([])
+                } else {
+                    setSources(json.sources);
+
+                }
+                setRefreshing(false);
+            }).catch(console.error);
+    },[]);
+
+    return {
+        sources,
+        refreshing,
+    }
+};
+
+export default () => {
+    const {sources, refreshing} = getSources();
+
     return (
-        <View style={styles.container}>
-            <Source/>
-        </View>
-    )
+        <SafeAreaView style={{flex: 1}}>
+            <FlatList
+                data={sources}
+                keyExtractor={item => item.url}
+                renderItem={({item}) => (
+                    <SourceCard  {...item}/>
+                )}
+                refreshing={refreshing}/>
+        </SafeAreaView>
+    );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white'
-    }
-});
-
-export default Sources;

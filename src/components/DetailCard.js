@@ -12,6 +12,7 @@ import {useNavigation} from "@react-navigation/native";
 import {styles} from "../utils/style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import {useSelector} from "react-redux";
 
 interface DetailsCardProps {
     title: string;
@@ -28,14 +29,16 @@ interface DetailsCardProps {
 
 export const DetailsCard: React.FC<DetailsCardProps> = React.memo(
     (props) => {
-        
+        let currentTheme = useSelector(state=>{
+            return state.myDarMode
+        })
         return (
             
-                <Card containerStyle = {{borderRadius: 10}}>
+                <Card containerStyle ={currentTheme ? styles.darkCard :styles.lightCard}>
                     <View
                         style={styles.container}
                     >
-                        <Text style={styles.titleStyle}>{props.title}</Text>
+                        <Text style={currentTheme ? styles.darkTitleStyle :styles.lightTitleStyle}>{props.title}</Text>
                     </View>
                     <Divider style={{backgroundColor: '#dfe6e9'}}/>
                     <Image
@@ -46,7 +49,7 @@ export const DetailsCard: React.FC<DetailsCardProps> = React.memo(
 
                     <Divider style={{backgroundColor: '#dfe6e9'}}/>
 
-                    <Text style={styles.descriptionStyle}>
+                    <Text style={currentTheme ? styles.darkDescriptionStyle :styles.lightDescriptionStyle}>
                         {props.description || 'Read More..'}
                     </Text>
 
@@ -55,8 +58,8 @@ export const DetailsCard: React.FC<DetailsCardProps> = React.memo(
                     <View
                         style={styles.container}
                     >
-                        <Text style={styles.noteStyle}>{props.source.name.toUpperCase()}</Text>
-                        <Text style={styles.noteStyle}>{props.publishedAt}</Text>
+                        <Text style={currentTheme ? styles.darkNoteStyle :styles.lightNoteStyle}>{props.source.name.toUpperCase()}</Text>
+                        <Text style={currentTheme ? styles.darkNoteStyle :styles.lightNoteStyle}>{props.publishedAt}</Text>
 
                     </View>
                 </Card>
