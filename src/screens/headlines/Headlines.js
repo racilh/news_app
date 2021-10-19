@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, SafeAreaView} from 'react-native';
 import 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NewsCard} from "../../components/NewsCard";
-import moment from "moment";
 import {useNavigation} from "@react-navigation/native";
-
+import {bookmarkStore} from "../../mobx/store";
+import {observer} from "mobx-react";
 
 const getNews = () => {
     const [articles, setArticles] = useState([]);
@@ -25,16 +24,6 @@ const getNews = () => {
                 } else {
                     setArticles(json.articles);
                 }
-                AsyncStorage.getItem('bookmarks')
-                    .then(bookmarksObject => {
-                        let bookmarks = {}
-                        if (bookmarksObject) {
-                            bookmarks = JSON.parse(bookmarksObject)
-                        }
-                        for (let article of articles) {
-                            renderBookMark(bookmarks, article)
-                        }
-                    })
                 setRefreshing(false);
             }).catch(console.error);
     }, []);
@@ -45,80 +34,52 @@ const getNews = () => {
     };
 };
 
-export default () => {
-    const {articles, refreshing} = getNews();
-    const [value, setValue] = useState();
+const Headlines = () => {
+    const store = bookmarkStore;
     const navigation = useNavigation();
+    const {articles, refreshing} = getNews();
+
+    const saveBookmarks = (item) => {
+        store.addBookmark(item);
+        store.isBookmarked=true;
+        refresh();
+    }
+    const removeBookMark = (article) => {
+        store.removeBookmark(article);
+        store.isBookmarked=false;
+        refresh();
+
+    }
+    const [value, setValue] = useState();
     const refresh = () => {
         // re-renders the component
         setValue({});
     }
 
-
-
-    const saveBookMark = item => {
-        AsyncStorage.getItem('bookmarks')
-            .then(bookmarksObject => {
-                let bookmarks = {}
-                if (bookmarksObject) {
-                    bookmarks = JSON.parse(bookmarksObject)
-                }
-                item.bookmark = true
-                item.histories = moment()
-                    .format('YYYY-MM-DD hh:mm:ss a');
-                bookmarks[item.publishedAt] = item
-                console.log(bookmarks)
-                AsyncStorage.setItem('bookmarks', JSON.stringify(bookmarks))
-                    .then(() => refresh())
-            })
-
-    };
-
-    const removeBookMark = item => {
-        AsyncStorage.getItem('bookmarks')
-            .then(bookmarksObject => {
-                let bookmarks = {}
-                if (bookmarksObject) {
-                    bookmarks = JSON.parse(bookmarksObject)
-                }
-                if (bookmarks[item.publishedAt]) {
-                    item.bookmark = false
-                    item.histories = moment()
-                        .format('YYYY-MM-DD hh:mm:ss a');
-                    delete bookmarks[item.publishedAt]
-                    console.log(bookmarks)
-                    AsyncStorage.setItem('bookmarks', JSON.stringify(bookmarks))
-                        .then(() => refresh())
-                }
-                else{
-                    console.log("IM HERE")
-                }
-            })
-
-    };
     const onPress = (item) => {
 
         navigation.navigate('NewsDetail', {
             ...item,
         })
     };
-    return (
+ return (
 
-        <SafeAreaView >
+        <SafeAreaView>
             <FlatList
                 data={articles}
                 keyExtractor={item => item.url}
-                renderItem={({item}) => (
+                renderItem={({item,index}) => (
                     <NewsCard
                         {...item}
                         onPress={() => onPress(item)}
-                        bookmark={item.bookmark}
-                        saveBookMark={() => saveBookMark(item)}
-                        removeBookMark={() => removeBookMark(item)}/>
+                        saveBookmarks={() => saveBookmarks(item)}
+                        removeBookMark={() => removeBookMark(item)}
+                    />
                 )}
                 refreshing={refreshing}/>
 
         </SafeAreaView>
 
     );
-}
+};
+export default observer(Headlines);

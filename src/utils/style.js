@@ -6,18 +6,32 @@ export const styles = {
         justifyContent: 'space-between',
         margin: 10,
     },
+    lightSwitchContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems:"center",
+        margin: 10,
+        backgroundColor:"white"
+    },
+    darkSwitchContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems:"center",
+        margin: 10,
+        backgroundColor:"black"
+    },
 
     darkDescriptionStyle: {
         margin: 20,
         fontWeight: 'bold',
-        color: 'grey',
+        color: 'white',
         fontSize: 15
     },
     lightDescriptionStyle: {
         margin: 20,
         fontWeight: 'bold',
         color: 'grey',
-        fontSize: 15
+        fontSize: 15,
     },
     darkTitleStyle: {
         fontSize: 20,

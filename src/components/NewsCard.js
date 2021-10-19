@@ -1,10 +1,9 @@
 import React from 'react';
-import {Button, Image, Pressable, Text, TouchableOpacity, View,} from 'react-native';
+import {Image, Pressable, Text, TouchableOpacity, View,} from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {Card, Divider} from "react-native-elements";
 import {styles} from "../utils/style"
-import {useSelector} from "react-redux";
-import {useDispatch} from "react-redux";
+import {bookmarkStore} from "../mobx/store";
 
 interface NewsCardProps {
     title: string;
@@ -12,50 +11,48 @@ interface NewsCardProps {
     author: string;
     source: string;
     publishedAt: string;
-    urlToImage: string;
+    image: string;
     defaultImg: string;
-    bookmark: boolean;
+    url:string;
     onPress: () => void;
-    saveBookMark: () => void;
+    saveBookmarks: () => void;
     removeBookMark: () => void;
 }
 
 export const NewsCard: React.FC<NewsCardProps> = React.memo(
     (props: NewsCardProps) => {
-        let currentTheme = useSelector(state=>{
-            return state.myDarMode
-        })
+        let store = bookmarkStore;
         return (
             <Pressable onPress={props.onPress}>
-                <Card  containerStyle ={currentTheme ? styles.darkCard :styles.lightCard} >
+                <Card  containerStyle ={store.theme ? styles.lightCard : styles.darkCard} >
                     <View
                         style={styles.container}
                     >
-                    {
-                        (!props.bookmark)
-                            ? (
-                                <TouchableOpacity onPress={() => props.saveBookMark(props)}>
-                                    <Ionicons name="bookmarks-outline" size={20} color={currentTheme ? "white" : "black"}/>
-                                </TouchableOpacity>
-                            )
-                            :
-                            (
-                                <TouchableOpacity onPress={() => props.removeBookMark(props)}>
-                                    <Ionicons name="bookmarks-outline" size={20} color="red"/>
-                                </TouchableOpacity>
-                            )
-                    }
-                    <Text style={currentTheme ? styles.darkTitleStyle :styles.lightTitleStyle}>{props.title}</Text>
+                        { (!bookmarkStore.bookmarkExists(props))
+
+                            ? <TouchableOpacity onPress={() => props.saveBookmarks(props)}>
+                                <Ionicons name="bookmarks-outline" size={20} color={store.theme ? "black" : "white"}/>
+                            </TouchableOpacity>
+
+                            : <TouchableOpacity onPress={() => props.removeBookMark(props.title)}>
+                                <Ionicons name="bookmarks-outline" size={20} color={"red"}/>
+                            </TouchableOpacity>
+                        }
+
+
+
+
+                    <Text style={store.theme ? styles.lightTitleStyle : styles.darkTitleStyle}>{props.title}</Text>
                     </View>
                     <Image
                         style={styles.image}
-                        source={{uri: props.urlToImage || props.defaultImg}}
+                        source={{uri: props.image || props.defaultImg}}
                     />
 
 
 
 
-                    <Text style={currentTheme ? styles.darkDescriptionStyle :styles.lightDescriptionStyle}>
+                    <Text style={store.theme ? styles.lightDescriptionStyle : styles.darkDescriptionStyle}>
                         {props.description || 'Read More..'}
                     </Text>
 
@@ -64,8 +61,8 @@ export const NewsCard: React.FC<NewsCardProps> = React.memo(
                     <View
                         style={styles.container}
                     >
-                        <Text style={currentTheme ? styles.darkNoteStyle :styles.lightNoteStyle}>{props.source.name.toUpperCase()}</Text>
-                        <Text style={currentTheme ? styles.darkNoteStyle :styles.lightNoteStyle}>{props.publishedAt}</Text>
+                        <Text style={ store.theme ? styles.lightNoteStyle :styles.darkNoteStyle}>{props.source.name.toUpperCase()}</Text>
+                        <Text style={ store.theme ? styles.lightNoteStyle :styles.darkNoteStyle}>{props.publishedAt}</Text>
 
                     </View>
                 </Card>

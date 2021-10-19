@@ -7,13 +7,7 @@ import 'react-native-gesture-handler';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {createAppContainer } from "react-navigation";
 import {createBottomTabNavigator} from "react-navigation-tabs";
-import {useDispatch, useSelector} from "react-redux";
 import SettingsScreen from "./SettingsScreen";
-import {styles} from "../../utils/style";
-import {View} from "react-native";
-import Icon from "react-native-ionicons";
-
-
 
 
 const Tab = createBottomTabNavigator({
@@ -115,14 +109,10 @@ const Navigator = createAppContainer(Tab);
 
 
 export default function HomeTab() {
-    let currentTheme = useSelector(state=>{
-        return state.myDarMode
-    })
-    console.log(currentTheme)
     return (
 
-        <Navigator theme={currentTheme ? styles.customDarkTheme : styles.customDefaultTheme}>
-            <Headlines />
+        <Navigator>
+            <Headlines  />
         </Navigator>
 
     );

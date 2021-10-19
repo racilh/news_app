@@ -1,52 +1,44 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useNavigation} from "@react-navigation/native";
+import {FlatList, SafeAreaView} from 'react-native';
 import {GeneralCard} from "../../components/Card";
+import {observer} from "mobx-react";
+import {bookmarkStore} from "../../mobx/store";
 
-const getData = () => {
-    const [data, setData] = useState([])
-
-
-    useEffect(() => {
-        retrieveData().catch(console.error)
-    }, [data]);
-
-    const retrieveData = async () => {
-        try {
-            const valueString = await AsyncStorage.getItem('bookmarks');
-            const value = JSON.parse(valueString);
-            setData(Object.values(value ?? []));
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    return {
-        data,
-    };
-}
 
 function Bookmark() {
-    const {data} = getData();
-    const [refreshing, setRefreshing] = useState(false);
 
+    let [refreshing, setRefreshing] = useState(false);
+    let store=bookmarkStore;
+    const [value, setValue] = useState();
+    const refresh = () => {
+        // re-renders the component
+        setValue({});
+    }
     useEffect(() => {
         setRefreshing(true)
-    }, [data]);
+        loadBookmarks()
+        refresh()
+    }, [store.bookmarks]);
+
+     function loadBookmarks() {
+         store.bookmarks;
+         setRefreshing(true);
+    }
+    console.log(store.bookmarks);
 
     function sortData() {
         let sortedArray = [];
 
         // If the item contains "first" property, it will be placed at the beginning of the sortedArray, else it will be at the end of it
-        data.forEach(bookmark => (
-            bookmark.histories
+        store.bookmarks.forEach(bookmark => (
+            bookmark.url
                 ? sortedArray = [bookmark, ...sortedArray]
                 : sortedArray.push(bookmark)
         ));
 
         return sortedArray;
     }
+
     return (
         <SafeAreaView>
             <FlatList
@@ -61,4 +53,4 @@ function Bookmark() {
     );
 }
 
-export default Bookmark;
+export default observer(Bookmark);
