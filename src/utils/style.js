@@ -10,14 +10,12 @@ export const styles = {
         flex: 1,
         justifyContent: 'center',
         alignItems:"center",
-        margin: 10,
         backgroundColor:"white"
     },
     darkSwitchContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems:"center",
-        margin: 10,
         backgroundColor:"black"
     },
 
@@ -86,9 +84,9 @@ export const styles = {
         colors:{
             ...DefaultTheme.colors,
             headerColor:"white",
-            iconColor:"black",
             tabIcon:"red",
-            textColor:"black"
+            textColor:"black",
+            backgroundColor:"white"
         }
     },
      customDarkTheme:{

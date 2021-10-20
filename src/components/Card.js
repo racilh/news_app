@@ -3,11 +3,13 @@ import {
     View,
     Image,
     Pressable,
-Text} from 'react-native';
+    Text
+} from 'react-native';
 import {Card, Divider} from "react-native-elements";
 import {useNavigation} from "@react-navigation/native";
 import {styles} from "../utils/style";
 import {bookmarkStore} from "../mobx/store";
+
 
 interface CardProps {
     title: string;
@@ -19,8 +21,15 @@ interface CardProps {
 
 }
 
+/**
+ * Component that renders the data passed from {@link Bookmark.js} and {@link Seen.js} component and displays it in a {@link Card} on the screen
+ * {@link React.memo} to prevent useless re-renderings when the next props equal to previous ones.
+ * Return false in the {propsAreEqual} function in order for the component to update.
+ * @return {JSX.Element}
+ * @type {React.NamedExoticComponent<object>}
+ */
 export const GeneralCard: React.FC<CardProps> = React.memo(
-    (props) => {
+    (props:CardProps) => {
         let store = bookmarkStore;
         const navigation = useNavigation();
         

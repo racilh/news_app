@@ -15,9 +15,15 @@ interface SourceCardProps {
     histories:string;
     onPress: () => void;
 }
-
+/**
+ * Component that renders the data passed from {@link Sources.js} component and displays it in a {@link Card} on the screen
+ * {@link React.memo} to prevent useless re-renderings when the next props equal to previous ones.
+ * Return false in the {propsAreEqual} function in order for the component to update.
+ * @return {JSX.Element}
+ * @type {React.NamedExoticComponent<object>}
+ */
 export const SourceCard: React.FC<SourceCardProps> = React.memo(
-    (props) => {
+    (props:SourceCardProps) => {
         let store = bookmarkStore;
         const navigation = useNavigation();
            

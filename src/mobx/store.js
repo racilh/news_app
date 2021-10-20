@@ -1,9 +1,20 @@
-import {action, computed, makeObservable, observable} from "mobx";
+import {action, autorun, computed, makeObservable, observable} from "mobx";
+
 
 class BookmarkStore {
 
-    _theme = false
+    _theme = true
+    _bookmarks = []
+    _history = []
 
+    /**
+     * Class constructor to keep track of
+     * the values of the observables : {@link _bookmark},{@link _history} ,{@link _theme}
+     * the returned values of the computed functions : {@link bookmarks},{@link history},{@link theme}
+     * the modifications of the states of our observables using action : {@link bookmarkExists}, {@link historyExists},
+     * {@link addHistory}, {@link removeBookmark},{@link addBookmark},{@link changeTheme}
+     * when changes occur using {@link makeObservable}
+     */
     constructor() {
         makeObservable(this, {
             _bookmarks: observable,
@@ -20,34 +31,56 @@ class BookmarkStore {
             changeTheme: action,
 
         });
+        autorun(() => {
+            console.log(this.bookmarks);
+            console.log(this.history);
+            console.log(this.theme);
+        });
 
     }
 
-    _bookmarks = []
-
+    /**
+     * @return {[]} of {@link bookmarks}
+     */
     get bookmarks() {
         return this._bookmarks;
     }
 
-    _history = []
-
+    /**
+     * @return {[]} of {@link history}
+     */
     get history() {
         return this._history;
     }
 
+    /**
+     * @return {boolean} value of {@link theme}
+     */
     get theme() {
         return this._theme;
     }
 
+    /**
+     * Function to check if an article is already bookmarked
+     * @param item
+     * @return {boolean}
+     */
     bookmarkExists(item) {
-        return this._bookmarks.filter(bookmark => bookmark.url === item.url).length > 0
+        return  this._bookmarks.filter(bookmark => bookmark.url === item.url).length > 0
     }
-
+    /**
+     * Function to check if an article is already in History
+     * @param item
+     * @return {boolean}
+     */
     historyExists(item) {
         return this._history.filter(history => history.url === item.url).length > 0
     }
 
-
+    /**
+     * Function to add an article to bookmark, and remove it if its already exists in bookmark
+     * @param item
+     */
     addBookmark(item) {
         if (this.bookmarkExists(item)) {
             this.removeBookmark(item)
@@ -57,7 +90,10 @@ class BookmarkStore {
         }
 
     }
-
+    /**
+     * Function to add an article to {@link _history}, and display log in console if its already exists
+     * @param item
+     */
     addHistory(item) {
         if (this.historyExists(item)) {
             console.log("Already Exists")
@@ -66,7 +102,10 @@ class BookmarkStore {
             console.log(this._history)
         }
     }
-
+    /**
+     * Function to remove an article from bookmark
+     * @param item
+     */
     removeBookmark(item) {
         console.log("HERE Delete WORKING")
         this.isBookmarked = false;
@@ -74,6 +113,9 @@ class BookmarkStore {
         console.log(this._bookmarks)
     }
 
+    /**
+     * Function that changes the state of the theme
+     */
     changeTheme() {
         this._theme = !this._theme
 
@@ -81,5 +123,7 @@ class BookmarkStore {
 
 
 }
-
+/**
+ * Let the module expose its assets to other modules using export
+ */
 export const bookmarkStore = new BookmarkStore();

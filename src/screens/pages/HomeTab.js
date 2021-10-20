@@ -5,11 +5,15 @@ import Bookmark from "../bookmarks/Bookmark";
 import Seen from "../seen/Seen";
 import 'react-native-gesture-handler';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {createAppContainer } from "react-navigation";
+import {createAppContainer} from "react-navigation";
 import {createBottomTabNavigator} from "react-navigation-tabs";
 import SettingsScreen from "./SettingsScreen";
 
 
+/**
+ * Initializing a simple tab bar on the bottom of the screen that lets us switch between different routes
+ * @type {import("react-navigation").NavigationNavigator<any, import("react-navigation").NavigationProp<import("react-navigation").NavigationState>>}
+ */
 const Tab = createBottomTabNavigator({
 
     Headlines: {
@@ -104,15 +108,17 @@ const Tab = createBottomTabNavigator({
         },
     },
 });
-
 const Navigator = createAppContainer(Tab);
 
-
+/**
+ * Creating a module that exposes assets to other modules using {@link export}
+ * Rendering {@link Navigator} in {@link HomeTab} with {@link Headlines} being the root component
+ */
 export default function HomeTab() {
     return (
 
         <Navigator>
-            <Headlines  />
+            <Headlines/>
         </Navigator>
 
     );
